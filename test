@@ -1,42 +1,6 @@
-elif ftype == "yes_import":
-            # Oui/Non — si Yes → bouton import apparaît
-            var = tk.StringVar(value="")
-            self.field_vars[key] = var
-
-            pv = tk.StringVar(value="")
-            fp = tk.StringVar(value="")
-            imp_key = key + ("__import__",)
-            self.import_paths[imp_key]      = pv
-            self.import_full_paths[imp_key] = fp
-
-            # Le conteneur du bouton import (caché par défaut)
-            import_frame = tk.Frame(row, bg="#FEF0F0")
-
-            def _show_import(v, fr=import_frame):
-                if v == "Yes":
-                    fr.pack(side="left", padx=(8, 0))
-                else:
-                    fr.pack_forget()
-
-            cb = ttk.Combobox(row, textvariable=var,
-                              values=["Yes", "No"],
-                              width=8, font=("Arial", 9),
-                              state="readonly", style="SG.TCombobox")
-            cb.pack(side="left")
-            var.trace_add("write", lambda *a, v=var: _show_import(v.get()))
-
-            # Bouton import dans le frame caché
-            fname = fld.get("filename", "Document")
-            tk.Button(import_frame,
-                      text=f"📎 Attach  {fname}",
-                      font=("Arial", 8), bg=SG_RED_LIGHT,
-                      fg=SG_RED, relief="flat", cursor="hand2",
-                      padx=8, pady=3,
-                      activebackground="#FFE0E5",
-                      command=lambda p=pv, f=fp: self._pick_file(p, f)
-                      ).pack(side="left")
-            tk.Label(import_frame, textvariable=pv,
-                     font=("Arial", 8), bg="#FEF0F0",
-                     fg=SG_GREEN, wraplength=200).pack(side="left", padx=4)
-
-        elif ftype == "text":
+# APRÈS — nom = label tâche (tronqué à 28 car Excel limite à 31 chars)
+raw_name = task_name[:28].strip().replace("/", "-").replace("\\", "-").replace("*", "").replace("?", "").replace("[", "").replace("]", "").replace(":", "")
+sname    = raw_name if raw_name not in [s.title for s in wb.worksheets] else f"{raw_name[:24]}_{doc_idx}"
+doc_ref  = f"→ Feuille '{sname}'"
+self._add_doc_sheet(wb, sname, imp_full, sec_name, task_name, imp_name)
+doc_idx += 1
